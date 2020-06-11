@@ -1,42 +1,49 @@
-import React, { Component } from 'react'
-import axios from '../../../axios';
-import  './Posts.css';
-import Post from '../../../components/Post/Post';
+import React, { Component } from "react";
+import axios from "../../../axios";
+import "./Posts.css";
+import { Link } from "react-router-dom";
+import Post from "../../../components/Post/Post";
 class Posts extends Component {
-    state = {
-        posts: [],
-        
-    }
-    componentDidMount() {
-        console.log(this.props);
-        axios.get('/posts')
-        .then(response => {
-            const posts = response.data.slice(0,4);
-            const updatedPosts = posts.map(post => {
-                return {
-                    ...post,
-                    author: 'Max'}
-            })
-            this.setState({posts: updatedPosts});
-        })
-     //   .catch(error => this.setState({error: true}));
-    }
-    postSelectedHandler =  (id) => {
-        this.setState({selectedPostId: id});
-    } 
-    render() {
-        let posts = <p style={{textAlign: 'center', color: 'red'}}>Something went wrong!!</p>;
-        if(!this.state.error){
-             posts = this.state.posts.map(post => {
-                return <Post key={post.id}  title={post.title}
-                clicked={() => this.postSelectedHandler(post.id)} author={post.author}/>
-            });
-        }
+  state = {
+    posts: [],
+  };
+  componentDidMount() {
+    console.log(this.props);
+    axios.get("/posts").then((response) => {
+      const posts = response.data.slice(0, 4);
+      const updatedPosts = posts.map((post) => {
+        return {
+          ...post,
+          author: "Max",
+        };
+      });
+      this.setState({ posts: updatedPosts });
+    });
+    //   .catch(error => this.setState({error: true}));
+  }
+  postSelectedHandler = (id) => {
+    this.setState({ selectedPostId: id });
+  };
+  render() {
+    let posts = (
+      <p style={{ textAlign: "center", color: "red" }}>
+        Something went wrong!!
+      </p>
+    );
+    if (!this.state.error) {
+      posts = this.state.posts.map((post) => {
         return (
-            <section className="Posts">
-            {posts}
-         </section>
-        )
+          <Link to={'/' + post.id} key={post.id}>
+            <Post
+              title={post.title}
+              clicked={() => this.postSelectedHandler(post.id)}
+              author={post.author}
+            />
+          </Link>
+        );
+      });
     }
+    return <section className="Posts">{posts}</section>;
+  }
 }
 export default Posts;
